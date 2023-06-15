@@ -7,6 +7,7 @@ const testUrl = 'https://test.com/'
 
 const pageMock = mock<Page>()
 const mockBrowser = mock<Browser>()
+
 mockBrowser.newPage.mockResolvedValue(pageMock)
 
 jest.mock('puppeteer', () => ({
@@ -31,11 +32,10 @@ describe('UrlLoaderService', () => {
     // when
 
     const instance = await UrlLoaderService.getInstance()
-    const stringPromise = instance.loadUrlTextAndLinks(testUrl)
+    const stringPromise = instance.loadUrlTextAndLinks(pageMock, testUrl)
 
     // then
     await expect(stringPromise).resolves.toEqual({ text: pageValue, links: ['test.html'] })
-    expect(mockBrowser.newPage).toHaveBeenCalledTimes(1)
     expect(pageMock.goto).toHaveBeenCalledTimes(1)
     expect(pageMock.goto).toHaveBeenCalledWith(testUrl)
   })
